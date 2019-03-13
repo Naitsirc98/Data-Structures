@@ -1,0 +1,36 @@
+package datastructures.util;
+
+public final class ErrorChecks {
+
+	private ErrorChecks() {}
+
+	public static void assertThat(boolean condition) {
+		assertThat(condition, "Condition was false");
+	}
+
+	public static void assertThat(boolean condition, String message) {
+
+		if(!condition) {
+			throw new AssertionError(message);
+		}
+
+	}
+	
+	public static void assertNotNull(Object obj) {
+		
+		if(obj == null) 
+			throw new NullPointerException();
+		
+	}
+
+	public static void indexCheck(int index, int min, int max) {
+
+		if(index < min) {
+			throw new IndexOutOfBoundsException("Index("+index+") < min("+min+")");
+		} else if(index >= max) {
+			throw new IndexOutOfBoundsException("Index("+index+") >= max("+max+")");
+		}
+
+	}
+
+}
