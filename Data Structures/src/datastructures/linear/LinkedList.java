@@ -2,6 +2,7 @@ package datastructures.linear;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import datastructures.util.ErrorChecks;
 
@@ -110,13 +111,13 @@ public class LinkedList<T> implements List<T> {
 
 	@Override
 	public T first() {
-		ErrorChecks.assertThat(size > 0, "List is empty");
+		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
 		return head.value;
 	}
 
 	@Override
 	public T last() {
-		ErrorChecks.assertThat(size > 0, "List is empty");
+		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
 		
 		Node node = head;
 		

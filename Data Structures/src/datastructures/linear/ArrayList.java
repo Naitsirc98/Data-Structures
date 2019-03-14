@@ -3,10 +3,11 @@ package datastructures.linear;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import datastructures.util.ErrorChecks;
 
-public class ArrayList<T> implements List<T> {
+public class ArrayList<T> implements List<T>, Stack<T> {
 
 	private Object[] array;
 	private int size;
@@ -68,13 +69,13 @@ public class ArrayList<T> implements List<T> {
 
 	@Override
 	public T first() {
-		ErrorChecks.assertThat(size > 0, "List is empty");
+		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
 		return at(0);
 	}
 
 	@Override
 	public T last() {
-		ErrorChecks.assertThat(size > 0, "List is empty");
+		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
 		return at(size-1);
 	}
 
@@ -338,6 +339,22 @@ public class ArrayList<T> implements List<T> {
 	@Override
 	public void addLast(T value) {
 		add(value);
+	}
+	
+	@Override
+	public boolean push(T value) {
+		addLast(value);
+		return true;
+	}
+
+	@Override
+	public T pop() {
+		return removeAt(size-1);
+	}
+
+	@Override
+	public T peek() {
+		return last();
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package linear;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 import org.junit.Before;
@@ -155,7 +156,7 @@ public abstract class TestList {
 		assertEquals(data[1], list.first());
 	}
 	
-	@Test(expected = AssertionError.class)
+	@Test(expected = NoSuchElementException.class)
 	public void testExceptionFirst() {
 		list.first();
 	}
@@ -172,7 +173,7 @@ public abstract class TestList {
 		
 	}
 	
-	@Test(expected = AssertionError.class)
+	@Test(expected = NoSuchElementException.class)
 	public void testExceptionLast() {
 		list.last();
 	}
@@ -198,15 +199,23 @@ public abstract class TestList {
 	@Test
 	public void testRemoveAt() {
 		
-		addData();
+		list.add(1);
+		assertEquals(1, list.removeAt(0).intValue());
 		
-		Random rand = new Random();
+		for(int i = 0;i < 10;i++) {
+			list.add(i);
+		}
 		
-		for(int i = 0;i < data.length;i++) {
+		final int[] indices = {3,5,3,3,0,4,3,1,1,0};
+		
+		final int size = list.size();
+		
+		for(int i = 0;i < size;i++) {
 			final int oldSize = list.size();
-			final int index = rand.nextInt(oldSize);
-			final Integer value = list.get(index);
-			assertEquals(value, list.removeAt(index));
+			final int index = indices[i];
+			final int value = list.get(index);
+			final int removed = list.removeAt(index);
+			assertEquals(value, removed);
 			assertTrue(oldSize > list.size());
 		}
 		

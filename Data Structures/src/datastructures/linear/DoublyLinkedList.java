@@ -2,10 +2,11 @@ package datastructures.linear;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import datastructures.util.ErrorChecks;
 
-public class DoublyLinkedList<T> implements List<T> {
+public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	
 	private class Node {
 		
@@ -122,13 +123,13 @@ public class DoublyLinkedList<T> implements List<T> {
 
 	@Override
 	public T first() {
-		ErrorChecks.assertThat(size > 0, "List is empty");
+		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
 		return head.value;
 	}
 
 	@Override
 	public T last() {
-		ErrorChecks.assertThat(size > 0, "List is empty");
+		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
 		return tail.value;
 	}
 
@@ -168,8 +169,13 @@ public class DoublyLinkedList<T> implements List<T> {
 		if(index == 0) {
 			
 			value = head.value;
-			head = head.next;
-			head.prev = null;
+			
+			if(size == 1) {
+				head = tail = null;
+			} else {
+				head = head.next;
+				head.prev = null;
+			}
 			
 		} else if(index == size-1) {
 			
@@ -198,8 +204,8 @@ public class DoublyLinkedList<T> implements List<T> {
 			}
 			
 			value = node.value;
-			node.prev.next = node;
-			node.prev = node.prev;
+			node.prev.next = node.next;
+			node.next.prev = node.prev;
 		}
 		
 		size--;
@@ -532,6 +538,33 @@ public class DoublyLinkedList<T> implements List<T> {
 	@Override
 	public void addLast(T value) {
 		add(value);
+	}
+	
+	@Override
+	public boolean push(T value) {
+		addLast(value);
+		return true;
+	}
+
+	@Override
+	public T pop() {
+		return removeAt(size-1);
+	}
+
+	@Override
+	public T peek() {
+		return last();
+	}
+
+	@Override
+	public boolean enqueue(T value) {
+		addLast(value);
+		return true;
+	}
+
+	@Override
+	public T poll() {
+		return removeAt(0);
 	}
 
 	@Override
