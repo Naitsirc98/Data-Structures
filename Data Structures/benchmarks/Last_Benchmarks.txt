@@ -1,0 +1,56 @@
+Last Benchmarks (14/03/2019)
+
+** ArrayList**
+
+Benchmark(ArrayList) -> add
+Time average: 0.07716161 ms
+Benchmark(ArrayList) -> remove
+Time average: 54.95881866 ms
+Benchmark(ArrayList) -> contains (success)
+Time average: 74.80253335 ms
+Benchmark(ArrayList) -> contains (fail)
+Time average: 148.79952439 ms
+
+**                **
+
+
+** LinkedList**
+
+Benchmark(LinkedList) -> add
+Time average: 0.047235150000000004 ms
+Benchmark(LinkedList) -> remove
+Time average: 89.52054872000001 ms
+Benchmark(LinkedList) -> contains (success)
+Time average: 119.15072113 ms
+Benchmark(LinkedList) -> contains (fail)
+Time average: 238.42257894000005 ms
+
+**                **
+
+
+** DoublyLinkedList**
+
+Benchmark(DoublyLinkedList) -> add
+Time average: 0.09598864999999998 ms
+Benchmark(DoublyLinkedList) -> remove
+Time average: 131.92664363 ms
+Benchmark(DoublyLinkedList) -> contains (success)
+Time average: 126.53956320999998 ms
+Benchmark(DoublyLinkedList) -> contains (fail)
+Time average: 258.20529662 ms
+
+**                **
+
+
+** SortedArrayList**
+
+Benchmark(SortedArrayList) -> add
+Time average: 0.18863573 ms
+Benchmark(SortedArrayList) -> remove
+Time average: 80.26527815 ms
+Benchmark(SortedArrayList) -> contains (success)
+Time average: 0.12479525000000002 ms
+Benchmark(SortedArrayList) -> contains (fail)
+Time average: 0.06397633999999999 ms
+
+**                **
