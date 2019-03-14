@@ -2,8 +2,6 @@ package datastructures.linear;
 
 public interface List<T> extends AbstractList<T> {
 
-	int lastIndexOf(T value);
-	int count(T value);
 	void insert(int index, T value);
 	T replaceAt(int index, T value);
 	void replace(T old, T repl);
