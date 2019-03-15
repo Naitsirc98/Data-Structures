@@ -52,7 +52,7 @@ public final class Algorithms {
 
 
 	public static <T> int binarySearch(int from, int to, T value, Comparator<T> cmp, AbstractList<T> list) {
-
+		
 		while(from <= to) {
 
 			final int mid = (from+to)/2;

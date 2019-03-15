@@ -5,12 +5,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import linear.TestArrayList;
-import linear.TestDoublyLinkedList;
-import linear.TestLinkedList;
-import linear.TestQueueDoublyLinkedList;
-import linear.TestStackArrayList;
-import linear.TestStackDoublyLinkedList;
+import lists.TestArrayList;
+import lists.TestDoublyLinkedList;
+import lists.TestLinkedList;
+import lists.TestQueueDoublyLinkedList;
+import lists.TestStackArrayList;
+import lists.TestStackDoublyLinkedList;
 
 
 @RunWith(Suite.class)

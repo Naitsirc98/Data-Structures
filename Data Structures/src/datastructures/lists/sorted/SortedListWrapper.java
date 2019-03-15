@@ -1,15 +1,16 @@
 package datastructures.lists.sorted;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
 import datastructures.lists.AbstractList;
 import datastructures.lists.List;
-import datastructures.restrictive.Deque;
+import datastructures.restrictive.PriorityQueue;
 import datastructures.util.Algorithms;
 import datastructures.util.ErrorChecks;
 
-public class SortedListWrapper<T> implements SortedList<T>, Deque<T> {
+public class SortedListWrapper<T> implements SortedList<T>, PriorityQueue<T> {
 
 	protected List<T> list;
 	protected Comparator<T> comparator;
@@ -91,7 +92,7 @@ public class SortedListWrapper<T> implements SortedList<T>, Deque<T> {
 
 	@Override
 	public boolean add(T value) {
-		final int index = Math.abs(indexOf(value))-1;
+		final int index = Math.abs(indexOf(value)+1);
 		list.insert(index, value);
 		return true;
 	}
@@ -155,25 +156,8 @@ public class SortedListWrapper<T> implements SortedList<T>, Deque<T> {
 	}
 	
 	@Override
-	public boolean push(T value) {
-		list.addLast(value);
-		return true;
-	}
-
-	@Override
-	public T pop() {
-		return removeAt(list.size()-1);
-	}
-
-	@Override
-	public T peek() {
-		return last();
-	}
-
-	@Override
 	public boolean enqueue(T value) {
-		list.addLast(value);
-		return true;
+		return add(value);
 	}
 
 	@Override
@@ -186,4 +170,9 @@ public class SortedListWrapper<T> implements SortedList<T>, Deque<T> {
 		return list.iterator();
 	}
 
+	@Override
+	public String toString() {
+		return list.toString();
+	}
+	
 }

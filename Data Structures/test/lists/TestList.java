@@ -1,4 +1,4 @@
-package linear;
+package lists;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.junit.Before;
@@ -298,6 +299,31 @@ public abstract class TestList {
 		list.insert(list.size(), -1);
 		assertEquals(-1, list.last().intValue());
 		assertTrue(oldSize < list.size());
+		
+		list.clear();
+		
+		assertTrue(list.isEmpty());
+		
+		for(int i = 0;i < 10;i++) {
+			list.add(i);
+		}
+		int[] values = new int[11];
+		
+		Iterator<Integer> it = list.iterator();
+		
+		for(int i = 0;it.hasNext();i++) {
+			if(i == 1)
+				values[1] = -1;
+			else
+				values[i] = it.next();
+		}
+		
+		list.insert(1, -1);
+		assertEquals(11, list.size());
+		
+		for(int i = 0;i < values.length;i++) {
+			assertEquals(values[i], list.get(i).intValue());
+		}
 	}
 	
 	@Test(expected = IndexOutOfBoundsException.class)

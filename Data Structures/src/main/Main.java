@@ -10,6 +10,7 @@ import datastructures.lists.List;
 import datastructures.lists.sorted.SortedArrayList;
 import datastructures.lists.sorted.SortedDoublyLinkedList;
 import datastructures.lists.sorted.SortedLinkedList;
+import datastructures.restrictive.PriorityQueue;
 
 public class Main {
 

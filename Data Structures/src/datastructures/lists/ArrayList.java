@@ -286,9 +286,7 @@ public class ArrayList<T> implements List<T>, Deque<T> {
 		if(size == capacity())
 			resize(size*2);
 			
-		for(int i = index;i < size;i++) {
-			array[i+1] = array[i];
-		}
+		System.arraycopy(array, index, array, index+1, size-index);
 		
 		array[index] = value;
 		size++;

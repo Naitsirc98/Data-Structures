@@ -1,4 +1,4 @@
-package linear;
+package lists;
 
 import datastructures.lists.ArrayList;
 import datastructures.lists.List;

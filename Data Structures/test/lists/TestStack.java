@@ -1,4 +1,4 @@
-package linear;
+package lists;
 
 
 import static org.junit.Assert.*;

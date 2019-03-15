@@ -1,4 +1,4 @@
-package linear;
+package lists;
 
 import datastructures.lists.DoublyLinkedList;
 import datastructures.lists.List;

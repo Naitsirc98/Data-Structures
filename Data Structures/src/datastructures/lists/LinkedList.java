@@ -556,6 +556,7 @@ public class LinkedList<T> implements List<T>, Deque<T> {
 	public boolean equals(Object obj) {
 		if(obj instanceof LinkedList) {
 			
+			@SuppressWarnings("unchecked")
 			LinkedList<T> other = (LinkedList<T>) obj;
 			
 			if(size != other.size)

@@ -628,6 +628,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	public boolean equals(Object obj) {
 		if(obj instanceof DoublyLinkedList) {
 			
+			@SuppressWarnings("unchecked")
 			DoublyLinkedList<T> other = (DoublyLinkedList<T>) obj;
 			
 			if(size != other.size)
