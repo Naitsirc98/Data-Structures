@@ -1,7 +1,7 @@
 package linear;
 
-import datastructures.linear.DoublyLinkedList;
-import datastructures.linear.Stack;
+import datastructures.lists.DoublyLinkedList;
+import datastructures.restrictive.Stack;
 
 public class TestStackDoublyLinkedList extends TestStack {
 

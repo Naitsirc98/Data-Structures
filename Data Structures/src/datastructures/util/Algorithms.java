@@ -2,8 +2,8 @@ package datastructures.util;
 
 import java.util.Comparator;
 
-import datastructures.linear.AbstractList;
-import datastructures.linear.List;
+import datastructures.lists.AbstractList;
+import datastructures.lists.List;
 
 public final class Algorithms {
 

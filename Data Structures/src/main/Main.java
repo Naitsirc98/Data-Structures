@@ -1,21 +1,23 @@
 package main;
 
 import benchmarks.Benchmark;
+import benchmarks.ListBenchmark;
 import datastructures.Collection;
-import datastructures.linear.ArrayList;
-import datastructures.linear.DoublyLinkedList;
-import datastructures.linear.LinkedList;
-import datastructures.linear.sorted.SortedArrayList;
-import datastructures.linear.sorted.SortedDoublyLinkedList;
-import datastructures.linear.sorted.SortedLinkedList;
+import datastructures.lists.ArrayList;
+import datastructures.lists.DoublyLinkedList;
+import datastructures.lists.LinkedList;
+import datastructures.lists.List;
+import datastructures.lists.sorted.SortedArrayList;
+import datastructures.lists.sorted.SortedDoublyLinkedList;
+import datastructures.lists.sorted.SortedLinkedList;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
-		benchmark(new ArrayList<>());
-		benchmark(new LinkedList<>());
-		benchmark(new DoublyLinkedList<>());
+		listBenchmark(new ArrayList<>());
+		listBenchmark(new LinkedList<>());
+		listBenchmark(new DoublyLinkedList<>());
 		benchmark(new SortedArrayList<>());
 		benchmark(new SortedLinkedList<>());
 		benchmark(new SortedDoublyLinkedList<>());
@@ -31,6 +33,24 @@ public class Main {
 		
 		b.addBenchmark();
 		b.removeBenchmark();
+		b.containsSuccessfulBenchmark();
+		b.containsFailBenchmark();
+		
+		System.out.println("\n**---**\n");
+		
+	}
+	
+	private static void listBenchmark(List<Integer> list) {
+		ListBenchmark b = new ListBenchmark(list);
+		
+		System.out.println("\n** "+b.getName()+" **");
+		System.out.println(">> Testing "+ Benchmark.ITERATIONS 
+				+ " sets of " + Benchmark.SAMPLE_SIZE + " random integers\n");
+		
+		b.addBenchmark();
+		b.insertBenchmark();
+		b.removeBenchmark();
+		b.removeAtBenchmark();
 		b.containsSuccessfulBenchmark();
 		b.containsFailBenchmark();
 		

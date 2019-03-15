@@ -1,7 +1,7 @@
 package linear;
 
-import datastructures.linear.DoublyLinkedList;
-import datastructures.linear.Queue;
+import datastructures.lists.DoublyLinkedList;
+import datastructures.restrictive.Queue;
 
 public class TestQueueDoublyLinkedList extends TestQueue {
 

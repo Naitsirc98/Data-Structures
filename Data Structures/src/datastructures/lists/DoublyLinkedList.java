@@ -1,20 +1,34 @@
-package datastructures.linear;
+package datastructures.lists;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import datastructures.restrictive.Deque;
 import datastructures.util.ErrorChecks;
 
-public class LinkedList<T> implements List<T> {
+public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	
 	private class Node {
 		
 		private Node next;
+		private Node prev;
 		private T value;
 		
 		Node(T value) {
 			this.value = value;
+		}
+		
+		Node(Node prev, T value, Node next) {
+			this.value = value;
+			if(prev != null) {
+				this.prev = prev;
+				prev.next = this;
+			}
+			if(next != null) {
+				this.next = next;
+				next.prev = this;
+			}
 		}
 		
 		@Override
@@ -25,19 +39,20 @@ public class LinkedList<T> implements List<T> {
 	}
 	
 	private Node head;
+	private Node tail;
 	private int size;
 	private int serial = Integer.MIN_VALUE;
 	
-	public LinkedList() {
+	public DoublyLinkedList() {
 		
 	}
 	
 	@SafeVarargs
-	public LinkedList(T...values) {
+	public DoublyLinkedList(T...values) {
 		addAll(values);
 	}
 	
-	public LinkedList(Iterable<T> other) {
+	public DoublyLinkedList(Iterable<T> other) {
 		addAll(other);
 	}
 	
@@ -75,18 +90,17 @@ public class LinkedList<T> implements List<T> {
 	}
 	
 	private int lastIndexOfNull() {
-		Node node = head;
-		int index = -1;
+		Node node = tail;
 		
-		for(int i = 0;i < size;i++) {
+		for(int i = size-1;i >= 0;i--) {
 			if(node.value == null) {
-				index = i;
+				return i;
 			}
 			
-			node = node.next;
+			node = node.prev;
 		}
 		
-		return index;
+		return -1;
 	}
 	
 	@Override
@@ -95,18 +109,17 @@ public class LinkedList<T> implements List<T> {
 		if(value == null) 
 			return lastIndexOfNull();
 		
-		Node node = head;
-		int index = -1;
+		Node node = tail;
 		
-		for(int i = 0;i < size;i++) {
+		for(int i = size-1;i >= 0;i--) {
 			if(value.equals(node.value)) {
-				index = i;
+				return i;
 			}
 			
-			node = node.next;
+			node = node.prev;
 		}
 		
-		return index;
+		return -1;
 	}
 
 	@Override
@@ -118,24 +131,31 @@ public class LinkedList<T> implements List<T> {
 	@Override
 	public T last() {
 		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
-		
-		Node node = head;
-		
-		while(node.next != null) {
-			node = node.next;
-		}
-		
-		return node.value;
+		return tail.value;
 	}
 
 	@Override
 	public T get(int index) {
 		ErrorChecks.indexCheck(index, 0, size);
 		
-		Node node = head;
+		Node node;
 		
-		for(int i = 0;i < index;i++) {
-			node = node.next;
+		if(index <= size / 2) {
+			
+			node = head;
+			
+			for(int i = 0;i < index;i++) {
+				node = node.next;
+			}
+			
+		} else {
+			
+			node = tail;
+			
+			for(int i = size-1;i > index;i--) {
+				node = node.prev;
+			}
+			
 		}
 		
 		return node.value;
@@ -148,20 +168,47 @@ public class LinkedList<T> implements List<T> {
 		T value;
 		
 		if(index == 0) {
+			
 			value = head.value;
-			head = head.next;
-		} else {
+			
+			if(size == 1) {
+				head = tail = null;
+			} else {
+				head = head.next;
+				head.prev = null;
+			}
+			
+		} else if(index == size-1) {
+			
+			value = tail.value;
+			tail = tail.prev;
+			tail.next = null;
+			
+		} else if(index <= size / 2) {
+			
 			Node node = head;
 			
-			for(int i = 0;i < index-1;i++) {
+			for(int i = 0;i < index;i++) {
 				node = node.next;
 			}
 			
-			value = node.next.value;
-			node.next = node.next.next;
+			value = node.value;
+			node.prev.next = node.next;
+			node.next.prev = node.prev;
+			
+		} else {
+			
+			Node node = tail;
+			
+			for(int i = size-1;i > index;i--) {
+				node = node.prev;
+			}
+			
+			value = node.value;
+			node.prev.next = node.next;
+			node.next.prev = node.prev;
 		}
 		
-
 		size--;
 		serial++;
 		
@@ -175,7 +222,7 @@ public class LinkedList<T> implements List<T> {
 		ErrorChecks.assertThat(max <= size, "max > size");
 		ErrorChecks.assertThat(size > 0, "List is empty");
 		
-		List<T> result = new LinkedList<>();
+		List<T> result = new DoublyLinkedList<>();
 		
 		Node node = head;
 		
@@ -195,13 +242,9 @@ public class LinkedList<T> implements List<T> {
 	public boolean add(T value) {
 		
 		if(size == 0) {
-			head = new Node(value);
+			head = tail = new Node(value);
 		} else {
-			
-			final Node tmp = head;
-			head = new Node(value);
-			head.next = tmp;
-			
+			tail = new Node(tail, value, null);
 		}
 		
 		size++;
@@ -219,10 +262,10 @@ public class LinkedList<T> implements List<T> {
 			return true;
 		}
 		
-		for(Node node = head;node.next != null;node = node.next) {
+		for(Node node = head;node != null;node = node.next) {
 			
-			if(node.next.value == null) {
-				node.next = node.next.next;
+			if(node.value == null) {
+				node.prev = node.next;
 				size--;
 				serial++;
 				return true;
@@ -243,16 +286,26 @@ public class LinkedList<T> implements List<T> {
 			return removeNull();
 		
 		if(value.equals(head.value)) {
-			head = head.next;
+			if(head == tail)
+				head = tail = null;
+			else
+				head = head.next;
 			size--;
 			serial++;
 			return true;
 		}
 		
-		for(Node node = head;node.next != null;node = node.next) {
+		if(value.equals(tail.value)) {
+			tail = tail.prev;
+			size--;
+			serial++;
+			return true;
+		}
+		
+		for(Node node = head;node != null;node = node.next) {
 			
-			if(value.equals(node.next.value)) {
-				node.next = node.next.next;
+			if(value.equals(node.value)) {
+				node.prev = node.next;
 				size--;
 				serial++;
 				return true;
@@ -277,7 +330,7 @@ public class LinkedList<T> implements List<T> {
 	@Override
 	public void clear() {
 		size = 0;
-		head = null;
+		head = tail = null;
 		serial++;
 	}
 
@@ -337,22 +390,33 @@ public class LinkedList<T> implements List<T> {
 		
 		if(index == 0) {
 			
-			final Node tmp = head;
-			head = new Node(value);
-			head.next = tmp;
+			addFirst(value);
+			return;
 			
-		} else {
+		} else if(index == size) {
+			
+			add(value);
+			return;
+			
+		} else if(index <= size / 2) {
 			
 			Node node = head;
 			
-			for(int i = 0;i < index-1;i++) {
+			for(int i = 0;i < index;i++) {
 				node = node.next;
 			}
 			
-			final Node tmp = node;
-			node = new Node(value);
-			node.next = tmp.next;
-			tmp.next = node;
+			new Node(node.prev, value, node);
+			
+		} else {
+			
+			Node node = tail;
+			
+			for(int i = size-1;i > index;i--) {
+				node = node.prev;
+			}
+			
+			new Node(node, value, node.next);
 		}
 		
 		size++;
@@ -361,13 +425,28 @@ public class LinkedList<T> implements List<T> {
 	
 	private Node find(int index) {
 		
-		Node node = head;
+		Node node;
 		
-		for(int i = 0;i < index;i++) {
-			node = node.next;
+		if(index <= size / 2) {
+			
+			node = head;
+			
+			for(int i = 0;i < index;i++) {
+				node = node.next;
+			}
+			
+		} else {
+			
+			node = tail;
+			
+			for(int i = size-1;i > index;i--) {
+				node = node.prev;
+			}
+			
 		}
-	
+		
 		return node;
+		
 	}
 	
 	private Node findNull() {
@@ -446,22 +525,11 @@ public class LinkedList<T> implements List<T> {
 
 	@Override
 	public void addFirst(T value) {
-		add(value);
-	}
-
-	@Override
-	public void addLast(T value) {
+		
 		if(size == 0) {
-			head = new Node(value);
+			head = tail = new Node(value);
 		} else {
-			
-			Node node = head;
-			
-			while(node.next != null) {
-				node = node.next;
-			}
-			
-			node.next = new Node(value);
+			head = new Node(null, value, head);
 		}
 		
 		size++;
@@ -469,11 +537,43 @@ public class LinkedList<T> implements List<T> {
 	}
 
 	@Override
-	public Iterator<T> iterator() {
-		return new LinkedListIterator();
+	public void addLast(T value) {
+		add(value);
 	}
 	
-	private class LinkedListIterator implements Iterator<T> {
+	@Override
+	public boolean push(T value) {
+		addLast(value);
+		return true;
+	}
+
+	@Override
+	public T pop() {
+		return removeAt(size-1);
+	}
+
+	@Override
+	public T peek() {
+		return last();
+	}
+
+	@Override
+	public boolean enqueue(T value) {
+		addLast(value);
+		return true;
+	}
+
+	@Override
+	public T poll() {
+		return removeAt(0);
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new DoublyLinkedListIterator();
+	}
+	
+	private class DoublyLinkedListIterator implements Iterator<T> {
 		
 		Node current = head;
 		final int mods = serial;
@@ -497,7 +597,7 @@ public class LinkedList<T> implements List<T> {
 		
 		
 	}
-
+	
 	@Override
 	public String toString() {	
 		StringBuilder builder = new StringBuilder("[");
@@ -520,14 +620,15 @@ public class LinkedList<T> implements List<T> {
 		result = prime * result + ((head == null) ? 0 : head.hashCode());
 		result = prime * result + serial;
 		result = prime * result + size;
+		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof LinkedList) {
+		if(obj instanceof DoublyLinkedList) {
 			
-			LinkedList<T> other = (LinkedList<T>) obj;
+			DoublyLinkedList<T> other = (DoublyLinkedList<T>) obj;
 			
 			if(size != other.size)
 				return false;

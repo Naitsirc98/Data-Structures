@@ -1,8 +1,8 @@
-package datastructures.linear.sorted;
+package datastructures.lists.sorted;
 
 import java.util.Comparator;
 
-import datastructures.linear.ArrayList;
+import datastructures.lists.ArrayList;
 
 public class SortedArrayList<T> extends SortedListWrapper<T> {
 	

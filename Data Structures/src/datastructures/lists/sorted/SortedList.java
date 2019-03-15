@@ -1,7 +1,7 @@
-package datastructures.linear.sorted;
+package datastructures.lists.sorted;
 
 import datastructures.SortedCollection;
-import datastructures.linear.AbstractList;
+import datastructures.lists.AbstractList;
 
 public interface SortedList<T> extends AbstractList<T>, SortedCollection<T> {
 

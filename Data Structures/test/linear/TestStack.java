@@ -10,7 +10,7 @@ import java.util.Random;
 import org.junit.Before;
 import org.junit.Test;
 
-import datastructures.linear.Stack;
+import datastructures.restrictive.Stack;
 
 public abstract class TestStack {
 

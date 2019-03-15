@@ -8,8 +8,7 @@ import datastructures.util.ErrorChecks;
 
 public class Benchmark {
 	
-	private static final double NANO_TO_MILLIS = 1.0 / 1000000.0;
-	
+	public static final double NANO_TO_MILLIS = 1.0 / 1000000.0;
 	public static final int DATA_SIZE = 100000;
 	public static final int ITERATIONS = 10;
 	public static final int SAMPLE_SIZE = DATA_SIZE / ITERATIONS;
@@ -17,18 +16,8 @@ public class Benchmark {
 	protected final String name;
 	protected Collection<Integer> collection;
 	protected Integer[] data;
-	protected Integer[] indices;
 	
-	public Benchmark(Collection<Integer> collection) {
-		ErrorChecks.assertNotNull(collection);
-		this.collection = collection;
-		name = collection.getClass().getSimpleName();
-		getData();
-		getIndices();
-	}
-	
-	protected void getData() {
-		
+	{
 		data = new Integer[DATA_SIZE];
 		
 		for(int i = 0;i < DATA_SIZE;i++) {
@@ -38,9 +27,11 @@ public class Benchmark {
 		shuffle(data);
 	}
 	
-	protected void getIndices() {
+	protected static int[] indices;
+	
+	static {
 		
-		indices = new Integer[DATA_SIZE];
+		indices = new int[DATA_SIZE];
 		
 		for(int i = 0;i < DATA_SIZE;i++) {
 			indices[i] = i;
@@ -49,12 +40,30 @@ public class Benchmark {
 		shuffle(indices);
 	}
 	
-	protected <T> void shuffle(T[] array) {
+	public Benchmark(Collection<Integer> collection) {
+		ErrorChecks.assertNotNull(collection);
+		this.collection = collection;
+		name = collection.getClass().getSimpleName();
+
+	}
+
+	protected static <T> void shuffle(T[] array) {
         Random random = new Random();
 
         for (int i = 0;i < DATA_SIZE;i++) {
             int index = i + random.nextInt(DATA_SIZE - i);
-            T e = array[index];
+            final T e = array[index];
+            array[index] = array[i];
+            array[i] = e;
+        }
+    }
+	
+	protected static void shuffle(int[] array) {
+        Random random = new Random();
+
+        for (int i = 0;i < DATA_SIZE;i++) {
+            int index = i + random.nextInt(DATA_SIZE - i);
+            final int e = array[index];
             array[index] = array[i];
             array[i] = e;
         }
@@ -118,7 +127,7 @@ public class Benchmark {
 			final double start = (double) System.nanoTime();
 			
 			for(int j = i*SAMPLE_SIZE;j < SAMPLE_SIZE*(i+1);j++) {
-				collection.contains(-1);
+				collection.contains(-data[j]);
 			}
 			
 			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;

@@ -1,7 +1,7 @@
 package linear;
 
-import datastructures.linear.ArrayList;
-import datastructures.linear.List;
+import datastructures.lists.ArrayList;
+import datastructures.lists.List;
 
 public class TestArrayList extends TestList {
 

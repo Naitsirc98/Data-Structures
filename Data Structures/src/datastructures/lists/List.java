@@ -1,4 +1,4 @@
-package datastructures.linear;
+package datastructures.lists;
 
 public interface List<T> extends AbstractList<T> {
 

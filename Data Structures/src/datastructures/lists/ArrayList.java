@@ -1,13 +1,14 @@
-package datastructures.linear;
+package datastructures.lists;
 
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import datastructures.restrictive.Deque;
 import datastructures.util.ErrorChecks;
 
-public class ArrayList<T> implements List<T>, Stack<T> {
+public class ArrayList<T> implements List<T>, Deque<T> {
 
 	private Object[] array;
 	private int size;
@@ -356,6 +357,18 @@ public class ArrayList<T> implements List<T>, Stack<T> {
 	public T peek() {
 		return last();
 	}
+
+	@Override
+	public boolean enqueue(T value) {
+		addLast(value);
+		return true;
+	}
+
+	@Override
+	public T poll() {
+		return removeAt(0);
+	}
+
 
 	@Override
 	public Iterator<T> iterator() {

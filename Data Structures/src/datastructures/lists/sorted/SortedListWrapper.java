@@ -1,14 +1,15 @@
-package datastructures.linear.sorted;
+package datastructures.lists.sorted;
 
 import java.util.Comparator;
 import java.util.Iterator;
 
-import datastructures.linear.AbstractList;
-import datastructures.linear.List;
+import datastructures.lists.AbstractList;
+import datastructures.lists.List;
+import datastructures.restrictive.Deque;
 import datastructures.util.Algorithms;
 import datastructures.util.ErrorChecks;
 
-public class SortedListWrapper<T> implements SortedList<T> {
+public class SortedListWrapper<T> implements SortedList<T>, Deque<T> {
 
 	protected List<T> list;
 	protected Comparator<T> comparator;
@@ -16,7 +17,13 @@ public class SortedListWrapper<T> implements SortedList<T> {
 	public SortedListWrapper(List<T> list) {
 		ErrorChecks.assertNotNull(list);
 		this.list = list;
-		comparator = (a, b) -> Integer.compare(a.hashCode(), b.hashCode());
+		comparator = (a, b) -> {
+			
+			final int h1 = a == null ? Integer.MIN_VALUE : a.hashCode();
+			final int h2 = b == null ? Integer.MIN_VALUE : b.hashCode();
+			
+			return Integer.compare(h1, h2);
+		};
 	}
 	
 	public SortedListWrapper(List<T> list, Comparator<T> comparator) {
@@ -145,6 +152,33 @@ public class SortedListWrapper<T> implements SortedList<T> {
 		if(index < 0)
 			return null;
 		return sublist(index, list.size());
+	}
+	
+	@Override
+	public boolean push(T value) {
+		list.addLast(value);
+		return true;
+	}
+
+	@Override
+	public T pop() {
+		return removeAt(list.size()-1);
+	}
+
+	@Override
+	public T peek() {
+		return last();
+	}
+
+	@Override
+	public boolean enqueue(T value) {
+		list.addLast(value);
+		return true;
+	}
+
+	@Override
+	public T poll() {
+		return removeAt(0);
 	}
 
 	@Override

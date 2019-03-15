@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import datastructures.linear.LinkedList;
-import datastructures.linear.List;
+import datastructures.lists.LinkedList;
+import datastructures.lists.List;
 
 public class TestLinkedList extends TestList {
 

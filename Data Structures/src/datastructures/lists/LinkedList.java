@@ -1,33 +1,21 @@
-package datastructures.linear;
+package datastructures.lists;
 
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import datastructures.restrictive.Deque;
 import datastructures.util.ErrorChecks;
 
-public class DoublyLinkedList<T> implements List<T>, Deque<T> {
+public class LinkedList<T> implements List<T>, Deque<T> {
 	
 	private class Node {
 		
 		private Node next;
-		private Node prev;
 		private T value;
 		
 		Node(T value) {
 			this.value = value;
-		}
-		
-		Node(Node prev, T value, Node next) {
-			this.value = value;
-			if(prev != null) {
-				this.prev = prev;
-				prev.next = this;
-			}
-			if(next != null) {
-				this.next = next;
-				next.prev = this;
-			}
 		}
 		
 		@Override
@@ -38,20 +26,19 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	}
 	
 	private Node head;
-	private Node tail;
 	private int size;
 	private int serial = Integer.MIN_VALUE;
 	
-	public DoublyLinkedList() {
+	public LinkedList() {
 		
 	}
 	
 	@SafeVarargs
-	public DoublyLinkedList(T...values) {
+	public LinkedList(T...values) {
 		addAll(values);
 	}
 	
-	public DoublyLinkedList(Iterable<T> other) {
+	public LinkedList(Iterable<T> other) {
 		addAll(other);
 	}
 	
@@ -89,17 +76,18 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	}
 	
 	private int lastIndexOfNull() {
-		Node node = tail;
+		Node node = head;
+		int index = -1;
 		
-		for(int i = size-1;i >= 0;i--) {
+		for(int i = 0;i < size;i++) {
 			if(node.value == null) {
-				return i;
+				index = i;
 			}
 			
-			node = node.prev;
+			node = node.next;
 		}
 		
-		return -1;
+		return index;
 	}
 	
 	@Override
@@ -108,17 +96,18 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		if(value == null) 
 			return lastIndexOfNull();
 		
-		Node node = tail;
+		Node node = head;
+		int index = -1;
 		
-		for(int i = size-1;i >= 0;i--) {
+		for(int i = 0;i < size;i++) {
 			if(value.equals(node.value)) {
-				return i;
+				index = i;
 			}
 			
-			node = node.prev;
+			node = node.next;
 		}
 		
-		return -1;
+		return index;
 	}
 
 	@Override
@@ -130,31 +119,24 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	@Override
 	public T last() {
 		ErrorChecks.assertThat(size > 0, NoSuchElementException.class);
-		return tail.value;
+		
+		Node node = head;
+		
+		while(node.next != null) {
+			node = node.next;
+		}
+		
+		return node.value;
 	}
 
 	@Override
 	public T get(int index) {
 		ErrorChecks.indexCheck(index, 0, size);
 		
-		Node node;
+		Node node = head;
 		
-		if(index <= size / 2) {
-			
-			node = head;
-			
-			for(int i = 0;i < index;i++) {
-				node = node.next;
-			}
-			
-		} else {
-			
-			node = tail;
-			
-			for(int i = size-1;i > index;i--) {
-				node = node.prev;
-			}
-			
+		for(int i = 0;i < index;i++) {
+			node = node.next;
 		}
 		
 		return node.value;
@@ -167,47 +149,20 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		T value;
 		
 		if(index == 0) {
-			
 			value = head.value;
-			
-			if(size == 1) {
-				head = tail = null;
-			} else {
-				head = head.next;
-				head.prev = null;
-			}
-			
-		} else if(index == size-1) {
-			
-			value = tail.value;
-			tail = tail.prev;
-			tail.next = null;
-			
-		} else if(index <= size / 2) {
-			
+			head = head.next;
+		} else {
 			Node node = head;
 			
-			for(int i = 0;i < index;i++) {
+			for(int i = 0;i < index-1;i++) {
 				node = node.next;
 			}
 			
-			value = node.value;
-			node.prev.next = node.next;
-			node.next.prev = node.prev;
-			
-		} else {
-			
-			Node node = tail;
-			
-			for(int i = size-1;i > index;i--) {
-				node = node.prev;
-			}
-			
-			value = node.value;
-			node.prev.next = node.next;
-			node.next.prev = node.prev;
+			value = node.next.value;
+			node.next = node.next.next;
 		}
 		
+
 		size--;
 		serial++;
 		
@@ -221,7 +176,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		ErrorChecks.assertThat(max <= size, "max > size");
 		ErrorChecks.assertThat(size > 0, "List is empty");
 		
-		List<T> result = new DoublyLinkedList<>();
+		List<T> result = new LinkedList<>();
 		
 		Node node = head;
 		
@@ -241,9 +196,13 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	public boolean add(T value) {
 		
 		if(size == 0) {
-			head = tail = new Node(value);
+			head = new Node(value);
 		} else {
-			tail = new Node(tail, value, null);
+			
+			final Node tmp = head;
+			head = new Node(value);
+			head.next = tmp;
+			
 		}
 		
 		size++;
@@ -261,10 +220,10 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 			return true;
 		}
 		
-		for(Node node = head;node != null;node = node.next) {
+		for(Node node = head;node.next != null;node = node.next) {
 			
-			if(node.value == null) {
-				node.prev = node.next;
+			if(node.next.value == null) {
+				node.next = node.next.next;
 				size--;
 				serial++;
 				return true;
@@ -285,26 +244,16 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 			return removeNull();
 		
 		if(value.equals(head.value)) {
-			if(head == tail)
-				head = tail = null;
-			else
-				head = head.next;
+			head = head.next;
 			size--;
 			serial++;
 			return true;
 		}
 		
-		if(value.equals(tail.value)) {
-			tail = tail.prev;
-			size--;
-			serial++;
-			return true;
-		}
-		
-		for(Node node = head;node != null;node = node.next) {
+		for(Node node = head;node.next != null;node = node.next) {
 			
-			if(value.equals(node.value)) {
-				node.prev = node.next;
+			if(value.equals(node.next.value)) {
+				node.next = node.next.next;
 				size--;
 				serial++;
 				return true;
@@ -329,7 +278,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	@Override
 	public void clear() {
 		size = 0;
-		head = tail = null;
+		head = null;
 		serial++;
 	}
 
@@ -389,33 +338,22 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		
 		if(index == 0) {
 			
-			addFirst(value);
-			return;
-			
-		} else if(index == size) {
-			
-			add(value);
-			return;
-			
-		} else if(index <= size / 2) {
-			
-			Node node = head;
-			
-			for(int i = 0;i < index;i++) {
-				node = node.next;
-			}
-			
-			new Node(node.prev, value, node);
+			final Node tmp = head;
+			head = new Node(value);
+			head.next = tmp;
 			
 		} else {
 			
-			Node node = tail;
+			Node node = head;
 			
-			for(int i = size-1;i > index;i--) {
-				node = node.prev;
+			for(int i = 0;i < index-1;i++) {
+				node = node.next;
 			}
 			
-			new Node(node, value, node.next);
+			final Node tmp = node;
+			node = new Node(value);
+			node.next = tmp.next;
+			tmp.next = node;
 		}
 		
 		size++;
@@ -424,28 +362,13 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	
 	private Node find(int index) {
 		
-		Node node;
+		Node node = head;
 		
-		if(index <= size / 2) {
-			
-			node = head;
-			
-			for(int i = 0;i < index;i++) {
-				node = node.next;
-			}
-			
-		} else {
-			
-			node = tail;
-			
-			for(int i = size-1;i > index;i--) {
-				node = node.prev;
-			}
-			
+		for(int i = 0;i < index;i++) {
+			node = node.next;
 		}
-		
+	
 		return node;
-		
 	}
 	
 	private Node findNull() {
@@ -524,20 +447,26 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 
 	@Override
 	public void addFirst(T value) {
-		
-		if(size == 0) {
-			head = tail = new Node(value);
-		} else {
-			head = new Node(null, value, head);
-		}
-		
-		size++;
-		serial++;
+		add(value);
 	}
 
 	@Override
 	public void addLast(T value) {
-		add(value);
+		if(size == 0) {
+			head = new Node(value);
+		} else {
+			
+			Node node = head;
+			
+			while(node.next != null) {
+				node = node.next;
+			}
+			
+			node.next = new Node(value);
+		}
+		
+		size++;
+		serial++;
 	}
 	
 	@Override
@@ -567,12 +496,13 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		return removeAt(0);
 	}
 
+
 	@Override
 	public Iterator<T> iterator() {
-		return new DoublyLinkedListIterator();
+		return new LinkedListIterator();
 	}
 	
-	private class DoublyLinkedListIterator implements Iterator<T> {
+	private class LinkedListIterator implements Iterator<T> {
 		
 		Node current = head;
 		final int mods = serial;
@@ -596,7 +526,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		
 		
 	}
-	
+
 	@Override
 	public String toString() {	
 		StringBuilder builder = new StringBuilder("[");
@@ -619,15 +549,14 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		result = prime * result + ((head == null) ? 0 : head.hashCode());
 		result = prime * result + serial;
 		result = prime * result + size;
-		result = prime * result + ((tail == null) ? 0 : tail.hashCode());
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof DoublyLinkedList) {
+		if(obj instanceof LinkedList) {
 			
-			DoublyLinkedList<T> other = (DoublyLinkedList<T>) obj;
+			LinkedList<T> other = (LinkedList<T>) obj;
 			
 			if(size != other.size)
 				return false;

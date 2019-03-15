@@ -8,7 +8,7 @@ import java.util.NoSuchElementException;
 import org.junit.Before;
 import org.junit.Test;
 
-import datastructures.linear.Queue;
+import datastructures.restrictive.Queue;
 
 public abstract class TestQueue {
 private Integer[] data = {1,2,3,4,5};
