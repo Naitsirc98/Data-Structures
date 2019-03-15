@@ -8,6 +8,8 @@ import datastructures.util.ErrorChecks;
 
 public class Benchmark {
 	
+	private static final double NANO_TO_MILLIS = 1.0 / 1000000.0;
+	
 	public static final int DATA_SIZE = 100000;
 	public static final int ITERATIONS = 10;
 	public static final int SAMPLE_SIZE = DATA_SIZE / ITERATIONS;
@@ -73,6 +75,8 @@ public class Benchmark {
 	
 	public double[] containsSuccessfulBenchmark() {
 		
+		collection.clear();
+		
 		addData();
 		
 		System.out.println("Benchmark(" + name + ") -> contains (success)");
@@ -89,7 +93,7 @@ public class Benchmark {
 				collection.contains(get(j));
 			}
 			
-			results[i] = (((double) System.nanoTime()) - start) / 10000000.0;
+			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;
 		}
 		
 		System.out.println("Time average: "+Algorithms.average(results) + " ms");
@@ -98,6 +102,8 @@ public class Benchmark {
 	}
 	
 	public double[] containsFailBenchmark() {
+		
+		collection.clear();
 		
 		addData();
 		
@@ -115,7 +121,7 @@ public class Benchmark {
 				collection.contains(-1);
 			}
 			
-			results[i] = (((double) System.nanoTime()) - start) / 10000000.0;
+			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;
 		}
 		
 		System.out.println("Time average: "+Algorithms.average(results) + " ms");
@@ -141,7 +147,7 @@ public class Benchmark {
 				collection.add(get(j));
 			}
 			
-			results[i] = (((double) System.nanoTime()) - start) / 10000000.0;
+			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;
 		}
 		
 		System.out.println("Time average: "+Algorithms.average(results) + " ms");
@@ -150,6 +156,8 @@ public class Benchmark {
 	}
 	
 	public double[] removeBenchmark() {
+		
+		collection.clear();
 		
 		addData();
 		
@@ -167,7 +175,7 @@ public class Benchmark {
 				collection.remove(get(j));
 			}
 			
-			results[i] = (((double) System.nanoTime()) - start) / 10000000.0;
+			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;
 		}
 		
 		System.out.println("Time average: "+Algorithms.average(results) + " ms");

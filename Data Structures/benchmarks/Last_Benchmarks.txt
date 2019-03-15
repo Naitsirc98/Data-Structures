@@ -1,56 +1,90 @@
-Last Benchmarks (14/03/2019)
+Last Benchmarks (15/03/2019)
 
-** ArrayList**
+** ArrayList **
+>> Testing 10 sets of 10000 random integers
 
 Benchmark(ArrayList) -> add
-Time average: 0.07716161 ms
+Time average: 0.755859 ms
 Benchmark(ArrayList) -> remove
-Time average: 54.95881866 ms
+Time average: 550.3976863 ms
 Benchmark(ArrayList) -> contains (success)
-Time average: 74.80253335 ms
+Time average: 756.257284 ms
 Benchmark(ArrayList) -> contains (fail)
-Time average: 148.79952439 ms
+Time average: 1501.3063622999998 ms
 
-**                **
+**---**
 
 
-** LinkedList**
+** LinkedList **
+>> Testing 10 sets of 10000 random integers
 
 Benchmark(LinkedList) -> add
-Time average: 0.047235150000000004 ms
+Time average: 0.47757370000000005 ms
 Benchmark(LinkedList) -> remove
-Time average: 89.52054872000001 ms
+Time average: 906.2406669 ms
 Benchmark(LinkedList) -> contains (success)
-Time average: 119.15072113 ms
+Time average: 1249.9307078999998 ms
 Benchmark(LinkedList) -> contains (fail)
-Time average: 238.42257894000005 ms
+Time average: 2514.0195854000003 ms
 
-**                **
+**---**
 
 
-** DoublyLinkedList**
+** DoublyLinkedList **
+>> Testing 10 sets of 10000 random integers
 
 Benchmark(DoublyLinkedList) -> add
-Time average: 0.09598864999999998 ms
+Time average: 0.998102 ms
 Benchmark(DoublyLinkedList) -> remove
-Time average: 131.92664363 ms
+Time average: 1412.3946695999998 ms
 Benchmark(DoublyLinkedList) -> contains (success)
-Time average: 126.53956320999998 ms
+Time average: 1331.7774128999997 ms
 Benchmark(DoublyLinkedList) -> contains (fail)
-Time average: 258.20529662 ms
+Time average: 2646.0009351 ms
 
-**                **
+**---**
 
 
-** SortedArrayList**
+** SortedArrayList **
+>> Testing 10 sets of 10000 random integers
 
 Benchmark(SortedArrayList) -> add
-Time average: 0.18863573 ms
+Time average: 1.7975197999999994 ms
 Benchmark(SortedArrayList) -> remove
-Time average: 80.26527815 ms
+Time average: 1312.2495649999998 ms
 Benchmark(SortedArrayList) -> contains (success)
-Time average: 0.12479525000000002 ms
+Time average: 1.3123390999999995 ms
 Benchmark(SortedArrayList) -> contains (fail)
-Time average: 0.06397633999999999 ms
+Time average: 0.6354165999999999 ms
 
-**                **
+**---**
+
+
+** SortedLinkedList **
+>> Testing 10 sets of 10000 random integers
+
+Benchmark(SortedLinkedList) -> add
+Time average: 38145.903736 ms
+Benchmark(SortedLinkedList) -> remove
+Time average: 2939.0207702000002 ms
+Benchmark(SortedLinkedList) -> contains (success)
+Time average: 78503.63283239999 ms
+Benchmark(SortedLinkedList) -> contains (fail)
+Time average: 10215.701643299999 ms
+
+**---**
+
+
+** SortedDoublyLinkedList **
+>> Testing 10 sets of 10000 random integers
+
+Benchmark(SortedDoublyLinkedList) -> add
+Time average: 22257.4499357 ms
+Benchmark(SortedDoublyLinkedList) -> remove
+Time average: 4233.5482178 ms
+Benchmark(SortedDoublyLinkedList) -> contains (success)
+Time average: 48204.707335499996 ms
+Benchmark(SortedDoublyLinkedList) -> contains (fail)
+Time average: 10515.687184199998 ms
+
+**---**
