@@ -1,4 +1,4 @@
-package lists;
+package test.lists;
 
 import datastructures.lists.ArrayList;
 import datastructures.lists.List;

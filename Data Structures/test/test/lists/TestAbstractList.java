@@ -1,22 +1,20 @@
-package lists;
+package test.lists;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import datastructures.lists.List;
+import datastructures.lists.AbstractList;
 
-public abstract class TestList {
+public abstract class TestAbstractList {
 
-	protected List<Integer> list;
+	protected AbstractList<Integer> list;
 	protected static Integer[] data;
 	
 	static {
@@ -24,7 +22,7 @@ public abstract class TestList {
 		for(int i = 0;i < data.length-1;i++) {
 			data[i] = i;
 		}
-		data[data.length-1] = null;
+		data[data.length-1] = 0;
 		
 		System.out.println(Arrays.toString(data));
 	}
@@ -36,7 +34,7 @@ public abstract class TestList {
 		}
 	}
 	
-	protected abstract List<Integer> getList();
+	protected abstract AbstractList<Integer> getList();
 	
 	@Before
 	public void init() {
@@ -84,7 +82,6 @@ public abstract class TestList {
 		assertEquals(data.length, list.size());
 		
 		// Repetition
-		assertTrue(list.add(null));
 		assertTrue(list.add(10));
 	}
 	
@@ -93,9 +90,11 @@ public abstract class TestList {
 		assertFalse(list.remove(null));
 		assertFalse(list.remove(0));
 		
-		addData();
+		for(int i = 0;i < data.length-1;i++) {
+			list.add(data[i]);
+		}
 		
-		for(int i = 0;i < data.length;i++) {
+		for(int i = 0;i < data.length-1;i++) {
 			final int oldSize = list.size();
 			assertTrue("While removing "+data[i], list.remove(data[i]));
 			assertFalse("While removing "+data[i], list.contains(data[i]));
@@ -113,7 +112,6 @@ public abstract class TestList {
 		assertTrue(list.addAll(other));
 		assertEquals(data.length, list.size());
 		assertTrue(list.containsAll(other));
-		
 		
 	}
 	
@@ -135,26 +133,20 @@ public abstract class TestList {
 		assertTrue(list.indexOf(null) < 0);
 		assertTrue(list.indexOf(0) < 0);
 		
-		addData();
+		for(int i = 0;i < 20;i++) {
+			list.add(200);
+		}
 		
-		list.addFirst(1);
-		assertEquals(0, list.indexOf(1));
-		
-		list.addLast(1);
-		assertEquals(0, list.indexOf(1));
-		
+		assertEquals(0, list.indexOf(200));
+
 		assertTrue(list.indexOf(-1) < 0);
+		
 	}
 	
+	@Test
 	public void testFirst() {
-		
-		addData();
-		
-		assertEquals(data[0], list.first());
-		
-		list.remove(data[0]);
-		
-		assertEquals(data[1], list.first());
+		list.add(7);
+		assertEquals(7, list.first().intValue());
 	}
 	
 	@Test(expected = NoSuchElementException.class)
@@ -165,13 +157,7 @@ public abstract class TestList {
 	@Test
 	public void testLast() {
 		addData();
-		
-		list.addLast(null);
-		assertNull(list.last());
-		
-		list.addLast(94);
-		assertEquals(94, list.last().intValue());
-		
+		assertEquals(0, list.last().intValue());
 	}
 	
 	@Test(expected = NoSuchElementException.class)
@@ -182,13 +168,9 @@ public abstract class TestList {
 	@Test
 	public void testGet() {
 		
-		addData();
-
-		list.addFirst(5);
-		assertEquals(5, list.get(0).intValue());
+		list.add(8);
 		
-		list.addLast(5);
-		assertEquals(5, list.get(list.size()-1).intValue());
+		assertEquals(8, list.get(0).intValue());
 		
 	}
 	
@@ -245,16 +227,12 @@ public abstract class TestList {
 	
 	@Test
 	public void testLastIndexOf() {
-		
-		addData();
-		
-		list.addFirst(-1);
 
-		assertEquals(list.indexOf(-1), list.lastIndexOf(-1));
+		for(int i = 0;i < 10;i++) {
+			list.add(800);
+		}
 		
-		list.addLast(-1);
-		
-		assertEquals(list.size()-1, list.lastIndexOf(-1));
+		assertEquals(list.size()-1, list.lastIndexOf(800));
 		
 	}
 	
@@ -266,7 +244,7 @@ public abstract class TestList {
 		
 		addData();
 		
-		assertEquals(1, list.count(null));
+		assertEquals(0, list.count(null));
 		assertEquals(1, list.count(4));
 		
 		for(int i = 0;i < 5;i++) {
@@ -277,154 +255,8 @@ public abstract class TestList {
 		
 	}
 	
-	@Test
-	public void testInsert() {
-		
-		for(int i = 0;i < 10;i++) {
-			list.add(i);
-		}
-		
-		int oldSize = list.size();
-		
-		list.insert(list.size() / 2, null);
-		
-		assertTrue(oldSize < list.size());
-		
-		oldSize = list.size();
-		list.insert(0, -1);
-		assertEquals(-1, list.first().intValue());
-		assertTrue(oldSize < list.size());
-		
-		oldSize = list.size();
-		list.insert(list.size(), -1);
-		assertEquals(-1, list.last().intValue());
-		assertTrue(oldSize < list.size());
-		
-		list.clear();
-		
-		assertTrue(list.isEmpty());
-		
-		for(int i = 0;i < 10;i++) {
-			list.add(i);
-		}
-		int[] values = new int[11];
-		
-		Iterator<Integer> it = list.iterator();
-		
-		for(int i = 0;it.hasNext();i++) {
-			if(i == 1)
-				values[1] = -1;
-			else
-				values[i] = it.next();
-		}
-		
-		list.insert(1, -1);
-		assertEquals(11, list.size());
-		
-		for(int i = 0;i < values.length;i++) {
-			assertEquals(values[i], list.get(i).intValue());
-		}
-	}
 	
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void testExceptionInsert() {
-		list.insert(1, null);
-	}
 	
-	@Test
-	public void testReplace() {
-		
-		addData();
-		
-		int index = list.indexOf(null);
-		list.replace(null, 1);
-		assertEquals(1, list.get(index).intValue());
-		assertEquals(0, list.count(null));
-		assertFalse(list.contains(null));
-		
-		
-		index = list.indexOf(8);
-		list.replace(8, 1);
-		assertEquals(1, list.get(index).intValue());
-		assertEquals(0, list.count(8));
-		assertFalse(list.contains(8));
-	}
-	
-	@Test
-	public void testReplaceAt() {
-		
-		addData();
-		
-		Integer first = list.first();
-		
-		assertEquals(first, list.replaceAt(0, list.last()));
-		assertEquals(list.last(), list.first());
-		
-	}
-	
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void testExceptionReplaceAt() {
-		list.replaceAt(0, 3);
-	}
-	
-	@Test
-	public void testSwap() {
-		
-		addData();
-		
-		Integer first = list.first();
-		Integer last = list.last();
-		
-		list.swap(0, list.size()-1);
-		
-		assertEquals(first, list.last());
-		assertEquals(last, list.first());
-		
-		Integer i = list.get(5);
-		list.swap(5, 5);
-		
-		assertEquals(i, list.get(5));
-	}
-	
-	@Test(expected = IndexOutOfBoundsException.class)
-	public void testExceptionSwap() {
-		list.swap(3, 5);
-	}
-	
-	@Test
-	public void testAddFirst() {
-		
-		list.addFirst(9);
-		assertEquals(9, list.first().intValue());
-		
-		addData();
-		
-		list.addFirst(4);
-		assertEquals(4, list.first().intValue());
-	}
-	
-	@Test
-	public void testAddLast() {
-		
-		list.addLast(9);
-		assertEquals(9, list.last().intValue());
-		
-		addData();
-		
-		list.addLast(4);
-		assertEquals(4, list.last().intValue());
-	}
 	
 
 }
-
-
-
-
-
-
-
-
-
-
-

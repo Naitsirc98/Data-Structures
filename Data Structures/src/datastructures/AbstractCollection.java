@@ -16,4 +16,6 @@ public interface AbstractCollection<T> extends Iterable<T> {
 		return true;
 	}
 	
+	AbstractCollection<T> copy();
+	
 }

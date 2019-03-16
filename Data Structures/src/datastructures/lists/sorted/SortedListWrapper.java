@@ -1,9 +1,9 @@
 package datastructures.lists.sorted;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import datastructures.AbstractCollection;
 import datastructures.lists.AbstractList;
 import datastructures.lists.List;
 import datastructures.restrictive.PriorityQueue;
@@ -67,12 +67,12 @@ public class SortedListWrapper<T> implements SortedList<T>, PriorityQueue<T> {
 
 	@Override
 	public T first() {
-		return first();
+		return list.first();
 	}
 
 	@Override
 	public T last() {
-		return last();
+		return list.last();
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class SortedListWrapper<T> implements SortedList<T>, PriorityQueue<T> {
 
 	@Override
 	public AbstractList<T> sublist(int min, int max) {
-		return list.sublist(min, max);
+		return new SortedListWrapper<>((List<T>)list.sublist(min, max));
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class SortedListWrapper<T> implements SortedList<T>, PriorityQueue<T> {
 		final int index = indexOf(value);
 		if(index < 0)
 			return null;
-		return sublist(index, list.size());
+		return sublist(index+1, list.size());
 	}
 	
 	@Override
@@ -169,10 +169,34 @@ public class SortedListWrapper<T> implements SortedList<T>, PriorityQueue<T> {
 	public Iterator<T> iterator() {
 		return list.iterator();
 	}
+	
+	@Override
+	public AbstractCollection<T> copy() {
+		return new SortedListWrapper<>((List<T>)list.copy(), this);
+	}
 
 	@Override
 	public String toString() {
 		return list.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((comparator == null) ? 0 : comparator.hashCode());
+		result = prime * result + ((list == null) ? 0 : list.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof SortedListWrapper) {
+			@SuppressWarnings("unchecked")
+			SortedListWrapper<T> other = (SortedListWrapper<T>) obj;
+			return list.equals(other.list);
+		}
+		return false;
 	}
 	
 }

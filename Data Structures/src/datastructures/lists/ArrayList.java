@@ -5,6 +5,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import datastructures.AbstractCollection;
 import datastructures.restrictive.Deque;
 import datastructures.util.ErrorChecks;
 
@@ -451,7 +452,11 @@ public class ArrayList<T> implements List<T>, Deque<T> {
 		
 		return false;
 	}
-	
+
+	@Override
+	public AbstractCollection<T> copy() {
+		return new ArrayList<>(this);
+	}
 	
 
 }

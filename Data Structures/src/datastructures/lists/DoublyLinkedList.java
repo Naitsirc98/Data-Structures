@@ -4,6 +4,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import datastructures.AbstractCollection;
 import datastructures.restrictive.Deque;
 import datastructures.util.ErrorChecks;
 
@@ -395,7 +396,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 			
 		} else if(index == size) {
 			
-			add(value);
+			addLast(value);
 			return;
 			
 		} else if(index <= size / 2) {
@@ -412,7 +413,7 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 			
 			Node node = tail;
 			
-			for(int i = size-1;i > index;i--) {
+			for(int i = size-1;i >= index;i--) {
 				node = node.prev;
 			}
 			
@@ -657,6 +658,9 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 		return false;
 	}
 	
-	
+	@Override
+	public AbstractCollection<T> copy() {
+		return new DoublyLinkedList<>(this);
+	}
 	
 }

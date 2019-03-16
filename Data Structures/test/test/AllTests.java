@@ -5,12 +5,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import lists.TestArrayList;
-import lists.TestDoublyLinkedList;
-import lists.TestLinkedList;
-import lists.TestQueueDoublyLinkedList;
-import lists.TestStackArrayList;
-import lists.TestStackDoublyLinkedList;
+import test.lists.TestArrayList;
+import test.lists.TestDoublyLinkedList;
+import test.lists.TestLinkedList;
+import test.lists.sorted.TestSortedArrayList;
+import test.lists.sorted.TestSortedDoublyLinkedList;
+import test.lists.sorted.TestSortedLinkedList;
+import test.restrictive.TestQueueArrayList;
+import test.restrictive.TestQueueDoublyLinkedList;
+import test.restrictive.TestQueueLinkedList;
+import test.restrictive.TestStackArrayList;
+import test.restrictive.TestStackDoublyLinkedList;
+import test.restrictive.TestStackLinkedList;
 
 
 @RunWith(Suite.class)
@@ -20,9 +26,16 @@ import lists.TestStackDoublyLinkedList;
 	TestDoublyLinkedList.class,
 	
 	TestStackArrayList.class,
+	TestStackLinkedList.class,
 	TestStackDoublyLinkedList.class,
 	
-	TestQueueDoublyLinkedList.class
+	TestQueueArrayList.class,
+	TestQueueLinkedList.class,
+	TestQueueDoublyLinkedList.class,
+	
+	TestSortedArrayList.class,
+	TestSortedLinkedList.class,
+	TestSortedDoublyLinkedList.class
 })
 public class AllTests {
 

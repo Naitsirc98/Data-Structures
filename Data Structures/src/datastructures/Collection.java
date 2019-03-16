@@ -1,7 +1,5 @@
 package datastructures;
 
-import java.util.Arrays;
-
 public interface Collection<T> extends AbstractCollection<T> {
 	
 	boolean add(T value);
@@ -29,13 +27,22 @@ public interface Collection<T> extends AbstractCollection<T> {
 	
 	@SuppressWarnings("unchecked")
 	default boolean addAll(T... values) {
-		return addAll(Arrays.asList(values));
+		for(T t : values) 
+			add(t);
+		
+		return true;
 	}
 	
 	
 	@SuppressWarnings("unchecked")
 	default boolean removeAll(T... values) {
-		return removeAll(Arrays.asList(values));
+		boolean removeAll = true;
+		
+		for(T t : values) {
+			removeAll &= remove(t);
+		}
+		
+		return removeAll;
 	}
 
 

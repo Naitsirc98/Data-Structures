@@ -1,4 +1,4 @@
-package lists;
+package test.lists;
 
 import datastructures.lists.DoublyLinkedList;
 import datastructures.lists.List;

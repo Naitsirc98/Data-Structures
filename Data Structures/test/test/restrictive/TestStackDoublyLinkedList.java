@@ -1,4 +1,4 @@
-package lists;
+package test.restrictive;
 
 import datastructures.lists.DoublyLinkedList;
 import datastructures.restrictive.Stack;
