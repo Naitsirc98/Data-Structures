@@ -17,6 +17,9 @@ import test.restrictive.TestQueueLinkedList;
 import test.restrictive.TestStackArrayList;
 import test.restrictive.TestStackDoublyLinkedList;
 import test.restrictive.TestStackLinkedList;
+import test.sets.TestArraySet;
+import test.sets.TestDoublyLinkedSet;
+import test.sets.TestLinkedSet;
 
 
 @RunWith(Suite.class)
@@ -35,7 +38,11 @@ import test.restrictive.TestStackLinkedList;
 	
 	TestSortedArrayList.class,
 	TestSortedLinkedList.class,
-	TestSortedDoublyLinkedList.class
+	TestSortedDoublyLinkedList.class,
+	
+	TestArraySet.class,
+	TestLinkedSet.class,
+	TestDoublyLinkedSet.class
 })
 public class AllTests {
 

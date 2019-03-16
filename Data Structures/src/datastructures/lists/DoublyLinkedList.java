@@ -452,23 +452,45 @@ public class DoublyLinkedList<T> implements List<T>, Deque<T> {
 	
 	private Node findNull() {
 		
-		for(Node node = head;node != null;node = node.next) {
-			if(node.value == null)
-				return node;
-		}
+		Node forward = head;
+		Node backwards = tail;
 		
+		for(int i = 0;i < (int)Math.ceil(size/2.0f);i++) {
+			
+			if(forward.value == null) {
+				return forward;
+			} else if(backwards.value == null) {
+				return backwards;
+			}
+			forward = forward.next;
+			backwards = backwards.prev;
+			
+		}
 		return null;
 		
 	}
 	
 	private Node find(T value) {
 		
+		if(size == 0)
+			return null;
+		
 		if(value == null)
 			return findNull();
 		
-		for(Node node = head;node != null;node = node.next) {
-			if(value.equals(node.value))
-				return node;
+		Node forward = head;
+		Node backwards = tail;
+		
+		for(int i = 0;i < (int)Math.ceil(size/2.0f);i++) {
+			
+			if(value.equals(forward.value)) {
+				return forward;
+			} else if(value.equals(backwards.value)) {
+				return backwards;
+			}
+			forward = forward.next;
+			backwards = backwards.prev;
+			
 		}
 		
 		return null;

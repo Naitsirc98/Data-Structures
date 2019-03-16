@@ -48,10 +48,8 @@ public class SetListWrapper<T> implements Set<T> {
 	@Override
 	public AbstractSet<T> complement(AbstractSet<T> other) {
 		Set<T> result = (Set<T>) copy();
-		for(T value : result) {
-			if(other.contains(value)) {
-				result.remove(value);
-			}
+		for(T value : other) {
+			result.remove(value);
 		}
 		return result;
 	}
@@ -101,8 +99,40 @@ public class SetListWrapper<T> implements Set<T> {
 
 	@Override
 	public AbstractCollection<T> copy() {
-		return new SetListWrapper<>((List<T>) list.copy(), this);
+		List<T> list = (List<T>) this.list.copy();
+		list.clear();
+		return new SetListWrapper<>(list, this);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((list == null) ? 0 : list.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof SetListWrapper) {
+			@SuppressWarnings("unchecked")
+			SetListWrapper<T> other = (SetListWrapper<T>) obj;
+			
+			for(T value : other) {
+				if (!contains(value)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return list.toString();
+	}
+	
 	
 
 }

@@ -11,24 +11,23 @@ import datastructures.lists.sorted.SortedArrayList;
 import datastructures.lists.sorted.SortedDoublyLinkedList;
 import datastructures.lists.sorted.SortedLinkedList;
 import datastructures.sets.ArraySet;
+import datastructures.sets.DoublyLinkedSet;
+import datastructures.sets.LinkedSet;
 import datastructures.sets.Set;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
-		Set<Integer> set = new ArraySet<>(1,2,3,4,5,2,4,1,5);
-		
-		for(Integer i : set) {
-			System.out.println(i);
-		}
-		
 		listBenchmark(new ArrayList<>());
 		listBenchmark(new LinkedList<>());
 		listBenchmark(new DoublyLinkedList<>());
+		benchmark(new ArraySet<>());
+		benchmark(new LinkedSet<>()); 
+		benchmark(new DoublyLinkedSet<>());
 		benchmark(new SortedArrayList<>());
-		benchmark(new SortedLinkedList<>());
 		benchmark(new SortedDoublyLinkedList<>());
+		benchmark(new SortedLinkedList<>());
 		
 	}
 	

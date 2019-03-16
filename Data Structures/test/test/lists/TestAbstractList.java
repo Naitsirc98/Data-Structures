@@ -23,8 +23,6 @@ public abstract class TestAbstractList {
 			data[i] = i;
 		}
 		data[data.length-1] = 0;
-		
-		System.out.println(Arrays.toString(data));
 	}
 	
 	protected void addData() {
