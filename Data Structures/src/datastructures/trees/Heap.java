@@ -71,6 +71,33 @@ public class Heap<T> extends BinaryTree<T> implements BalancedTree<T>, SortedCol
 	public void setComparator(Comparator<T> comparator) {
 		throw new UnsupportedOperationException("Cannot change comparator of a created Heap");
 	}
+	
+	@Override
+	protected BinaryTreeNode find(T value) {
+		return find(root, value);
+	}
+	
+	protected BinaryTreeNode find(BinaryTreeNode node, T value) {
+		
+		if(node == null)
+			return null;
+		
+		final int cmp = comparator.compare(value, node.value);
+		
+		if(cmp < 0) { // Imposible, the element is not in the subheap
+			return null;
+		} else if(cmp > 0) {
+			return nonNull(find(node.left, value), find(node.right, value));
+		} 
+		
+		// Here, cmp == 0, then return node
+		
+		return node;
+	}
+	
+	protected BinaryTreeNode nonNull(BinaryTreeNode a, BinaryTreeNode b) {
+		return a == null ? b : a;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -1,16 +1,14 @@
 package main;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Random;
 
 import benchmarks.Benchmark;
 import benchmarks.ListBenchmark;
 import datastructures.Collection;
-import datastructures.SortedCollection;
 import datastructures.lists.ArrayList;
 import datastructures.lists.List;
+import datastructures.trees.BinarySearchTree;
 import datastructures.trees.BinaryTree;
 import datastructures.trees.Heap;
 
@@ -26,15 +24,8 @@ public class Main {
 		
 		Random rand = new Random(System.nanoTime());
 		
-		for(int i = 0;i < 50;) {
-			if(rand.nextFloat() < 0.5f) {
-				int n = rand.nextInt(100);
-				list.add(n);
-				tree.add(n);
-				i++;
-			} else if(list.size() > 0) {
-				tree.remove(list.get(rand.nextInt(list.size())));
-			}
+		for(int i = 0;i < 50;i++) {
+			list.add(i);
 		}
 		
 		System.out.println(tree);
@@ -48,7 +39,8 @@ public class Main {
 		System.out.println("Breath");
 		print(tree.breathIterator());*/
 		
-		// benchmark(new BinarySearchTree<>());
+		benchmark(new BinarySearchTree<>());
+		benchmark(new Heap<>());
 		
 		/*listBenchmark(new ArrayList<>());
 		listBenchmark(new LinkedList<>());
