@@ -127,7 +127,7 @@ public class Benchmark {
 			final double start = (double) System.nanoTime();
 			
 			for(int j = i*SAMPLE_SIZE;j < SAMPLE_SIZE*(i+1);j++) {
-				collection.contains(-data[j]);
+				collection.contains(-get(j));
 			}
 			
 			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;
@@ -186,6 +186,8 @@ public class Benchmark {
 			
 			results[i] = (((double) System.nanoTime()) - start) * NANO_TO_MILLIS;
 		}
+		
+		ErrorChecks.assertThat(collection.isEmpty(), "Collection should be empty at this time");
 		
 		System.out.println("Time average: "+Algorithms.average(results) + " ms");
 		

@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 import datastructures.AbstractCollection;
+import datastructures.SortedCollection;
 import datastructures.lists.AbstractList;
 import datastructures.lists.List;
 import datastructures.restrictive.PriorityQueue;
@@ -18,13 +19,7 @@ public class SortedListWrapper<T> implements SortedList<T>, PriorityQueue<T> {
 	public SortedListWrapper(List<T> list) {
 		ErrorChecks.assertNotNull(list);
 		this.list = list;
-		comparator = (a, b) -> {
-			
-			final int h1 = a == null ? Integer.MIN_VALUE : a.hashCode();
-			final int h2 = b == null ? Integer.MIN_VALUE : b.hashCode();
-			
-			return Integer.compare(h1, h2);
-		};
+		comparator = SortedCollection.naturalComparator();
 	}
 	
 	public SortedListWrapper(List<T> list, Comparator<T> comparator) {

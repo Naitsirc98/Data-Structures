@@ -472,18 +472,18 @@ public class LinkedList<T> implements List<T>, Deque<T> {
 	
 	@Override
 	public boolean push(T value) {
-		addLast(value);
+		addFirst(value);
 		return true;
 	}
 
 	@Override
 	public T pop() {
-		return removeAt(size-1);
+		return removeAt(0);
 	}
 
 	@Override
 	public T peek() {
-		return last();
+		return first();
 	}
 
 	@Override
