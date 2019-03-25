@@ -1,62 +1,59 @@
 package datastructures.trees;
 
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
+import datastructures.AbstractCollection;
 import datastructures.SortedCollection;
+import datastructures.lists.ArrayList;
+import datastructures.restrictive.PriorityQueue;
+import datastructures.trees.BinaryTree.BinaryTreeNode;
 import datastructures.util.ErrorChecks;
 
-public class Heap<T> extends BinaryTree<T> implements BalancedTree<T>, SortedCollection<T> {
+public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 	
-	protected class HeapNode extends BinaryTreeNode {
-		
-		protected static final boolean LEFT = false;
-		protected static final boolean RIGHT = true;
-
-		protected boolean nextSide = LEFT; // Used for balance
-		
-		protected HeapNode(BinaryTree<T>.BinaryTreeNode parent, T value) {
-			super(parent, value);
-		}
-		
-		protected boolean nextSide() {
-			final boolean next = nextSide;
-			nextSide = !nextSide;
-			return next;
-		}
-		
+	public static <T> Heap<T> createMinHeap() {
+		return new Heap<T>(SortedCollection.naturalComparator());
 	}
 	
-	private Comparator<T> comparator;
+	public static <T> Heap<T> createMaxHeap() {
+		return new Heap<T>(SortedCollection.reverseComparator());
+	}
 	
+	private ArrayList<T> array;
+	private Comparator<T> comparator;
+
 	public Heap() {
 		this(SortedCollection.naturalComparator());
 	}
-	
+
 	public Heap(T root) {
 		this(root, SortedCollection.naturalComparator());
 	}
-	
+
 	public Heap(Comparator<T> comparator) {
 		ErrorChecks.assertNotNull(comparator);
 		this.comparator = comparator;
+		array = new ArrayList<>();
 	}
-	
+
 	public Heap(T root, Comparator<T> comparator) {
 		ErrorChecks.assertNotNull(comparator);
 		this.comparator = comparator;
-		this.root = new HeapNode(null, root);
+		array = new ArrayList<>(root);
 	}
-	
+
 	public Heap(Iterable<T> other) {
 		this(SortedCollection.naturalComparator());
 		addAll(other);
 	}
-	
+
 	public Heap(Comparator<T> comparator, Iterable<T> other) {
 		this(null, comparator);
 		addAll(other);
 	}
-	
+
 	public Heap(T root, Comparator<T> comparator, Iterable<T> other) {
 		this(root, comparator);
 		addAll(other);
@@ -69,146 +66,191 @@ public class Heap<T> extends BinaryTree<T> implements BalancedTree<T>, SortedCol
 
 	@Override
 	public void setComparator(Comparator<T> comparator) {
-		throw new UnsupportedOperationException("Cannot change comparator of a created Heap");
-	}
-	
-	@Override
-	protected BinaryTreeNode find(T value) {
-		return find(root, value);
-	}
-	
-	protected BinaryTreeNode find(BinaryTreeNode node, T value) {
-		
-		if(node == null)
-			return null;
-		
-		final int cmp = comparator.compare(value, node.value);
-		
-		if(cmp < 0) { // Imposible, the element is not in the subheap
-			return null;
-		} else if(cmp > 0) {
-			return nonNull(find(node.left, value), find(node.right, value));
-		} 
-		
-		// Here, cmp == 0, then return node
-		
-		return node;
-	}
-	
-	protected BinaryTreeNode nonNull(BinaryTreeNode a, BinaryTreeNode b) {
-		return a == null ? b : a;
+		ErrorChecks.assertNotNull(comparator);
+		if(!this.comparator.equals(comparator)) {
+			// TODO
+		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+	public T root() {
+		return array.first();
+	}
+
+	@Override
+	public int level(T value) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int degree(T value) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int degree() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int height() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int height(T value) {
+		return 0;
+	}
+	
+	private int parentOf(int index) {
+		return (index-1)/2;
+	}
+	
+	private int leftChildOf(int index) {
+		return (2*index)+1;
+	}
+	
+	private int rightChildOf(int index) {
+		return (2*index)+2;
+	}
+	
+	private void siftUp(int index) {
+		
+		while(index != 0) {
+			
+			final int parentIndex = parentOf(index);
+			
+			if(comparator.compare(array.get(index), array.get(parentIndex)) < 0) {
+				array.swap(index, parentIndex);
+			} else {
+				break;
+			}
+			
+			index = parentIndex;
+		}
+		
+	}
+
 	@Override
 	public boolean add(T value) {
 		
-		// Add a value randomly
+		array.add(value);
 		
-		if(root == null) {
-			root = new HeapNode(null, value);
-		} else {
-			
-			HeapNode node = (HeapNode) root;
-			
-			while(true) {
-				
-				if(node.left == null) {
-					node.left = new HeapNode(node, value);
-					node = (HeapNode) node.left;
-					break;
-				} else if(node.right == null) {
-					node.right = new HeapNode(node, value);
-					node = (HeapNode) node.right;
-					break;
-				} else {
-					
-					if(node.nextSide() == HeapNode.LEFT) {
-						node = (HeapNode) node.left;
-					} else {
-						node = (HeapNode) node.right;
-					}
-					
-				}
+		siftUp(array.size()-1);
+		
+		return true;
+	}
 
-			}
-			
-			adjust(node);
-			
-		}
-		
-		size++;
-		serial++;
-		return true;
-	}
-	
-	protected void adjust(BinaryTreeNode node) {
-		
-		if(node == null) {
-			return;
-		}
-		
-		while(node.parent != null) {
-			if(comparator.compare(node.value, node.parent.value) < 0) {
-				T tmp = node.parent.value;
-				node.parent.value = node.value;
-				node.value = tmp;
-			}
-			node = node.parent;
-		}
-		
-	}
-	
 	@Override
-	protected boolean remove(BinaryTreeNode node) {
-		
-		if(node == null)
-			return false;
-		
-		if(node.isLeaf()) {
-			
-			removeLeaf(node);
-			
-		} else if(node.degree() == 1) {
-			
-			removeDegree1(node);
-			
-		} else { // Remove degree 2
-			
-			BinaryTreeNode min = min(node.left, node.right);
-			
-			node.value = min.value;
-			
-			remove(min);
-		}
-		
-		return true;
+	public boolean remove(T value) {
+		// TODO Auto-generated method stub
+		return false;
 	}
-	
-	protected BinaryTreeNode min(BinaryTreeNode a, BinaryTreeNode b) {
-		
-		if(a == null && b == null) 
-			return null;
-		if(a == null)
-			return b;
-		if(b == null)
-			return a;
-		
-		final int cmp = comparator.compare(a.value, b.value);
-		
-		return cmp <= 0 ? a : b;
+
+	@Override
+	public int size() {
+		return array.size();
 	}
-	
+
+	@Override
+	public boolean isEmpty() {
+		return array.isEmpty();
+	}
+
+	@Override
+	public void clear() {
+		array.clear();
+	}
+
+	@Override
+	public boolean contains(T value) {
+		return false;
+	}
+
+	@Override
+	public T[] toArray() {
+		return array.toArray();
+	}
+
+	@Override
+	public AbstractCollection<T> copy() {
+		return new Heap<>(array);
+	}
+
+	@Override
+	public boolean enqueue(T value) {
+		return add(value);
+	}
+
+	@Override
+	public T poll() {
+		ErrorChecks.assertThat(!array.isEmpty(), NoSuchElementException.class);
+		final T value = array.get(0);
+		remove(value);
+		return value;
+	}
+
 	@Override
 	public T first() {
-		return root();
+		return array.first();
 	}
 
 	@Override
 	public T last() {
-		return new InOrderBinaryTreeIterator().next();
+		return array.last();
+	}
+
+	@Override
+	public Iterator<T> inOrderIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterator<T> preOrderIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterator<T> postOrderIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterator<T> breathIterator() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
+	/*https://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram (Todd Davies answer)*/
+	protected StringBuilder visualize(int node, StringBuilder prefix, boolean isTail, StringBuilder sb) {
+
+		int right = rightChildOf(node);
+		int left = leftChildOf(node);
+		
+	    if(right < size() && array.get(right) != null) {
+	        visualize(right, new StringBuilder().append(prefix).append(isTail ? "|   " : "    "), false, sb);
+	    }
+	    sb.append(prefix).append(isTail ? "\\—— " : "/—— ").append(array.get(node)).append("\n");
+	    if(left < size() && array.get(left) != null) {
+	        visualize(left, new StringBuilder().append(prefix).append(isTail ? "    " : "|   "), true, sb);
+	    }
+	    return sb;
+	}
 	
+
+	@Override
+	public String toString() {
+	    return !array.isEmpty() 
+	    		? visualize(0, new StringBuilder(), true, new StringBuilder()).toString()
+	    		: "{}";
+	}
+
 }

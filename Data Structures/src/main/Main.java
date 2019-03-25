@@ -1,5 +1,6 @@
 package main;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -8,6 +9,7 @@ import benchmarks.ListBenchmark;
 import datastructures.Collection;
 import datastructures.lists.ArrayList;
 import datastructures.lists.List;
+import datastructures.restrictive.PriorityQueue;
 import datastructures.trees.BinarySearchTree;
 import datastructures.trees.BinaryTree;
 import datastructures.trees.Heap;
@@ -16,31 +18,38 @@ public class Main {
 
 	public static void main(String[] args) {
 		
-		BinaryTree<Integer> tree = new Heap<>();
-		
+		Heap<Integer> tree = new Heap<>();
+
+		for(int i = 0;i < 10;i++) {
+			tree.add(i);
+		}
+
 		System.out.println(tree);
+		System.out.println(Arrays.toString(tree.toArray()));
 		
-		List<Integer> list = new ArrayList<>();
+		/*PriorityQueue<Integer> queue = tree;
+		 
 		
-		Random rand = new Random(System.nanoTime());
-		
-		for(int i = 0;i < 50;i++) {
-			list.add(i);
+		System.out.println();
+		while(!queue.isEmpty()) {
+			System.out.println("Breath");
+			print(tree.breathIterator());
+			System.out.println();
+			System.out.println(queue.poll()+" removed");
+			System.out.println(tree);
 		}
 		
-		System.out.println(tree);
-		
-		/*System.out.println("In order");
+		System.out.println("In order");
 		print(tree.inOrderIterator());
 		System.out.println("Pre order");
 		print(tree.preOrderIterator());
 		System.out.println("Post order");
 		print(tree.postOrderIterator());
 		System.out.println("Breath");
-		print(tree.breathIterator());*/
+		print(tree.breathIterator());
 		
 		benchmark(new BinarySearchTree<>());
-		benchmark(new Heap<>());
+		benchmark(new Heap<>());*/
 		
 		/*listBenchmark(new ArrayList<>());
 		listBenchmark(new LinkedList<>());

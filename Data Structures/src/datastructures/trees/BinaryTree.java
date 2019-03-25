@@ -382,6 +382,47 @@ public class BinaryTree<T> implements Tree<T> {
 		}
 
 	}
+	
+	protected class InOrderBinaryTreeNodeIterator implements Iterator<BinaryTreeNode> {
+
+		Stack<BinaryTreeNode> stack = new LinkedList<>();
+		protected final int mods = serial;
+
+		InOrderBinaryTreeNodeIterator() {
+			this(root);
+		}
+
+		InOrderBinaryTreeNodeIterator(BinaryTreeNode node) {
+			if(node != null)
+				insertLeft(node);
+		}
+
+		void insertLeft(BinaryTreeNode node) {
+			while(node != null) {
+				stack.push(node);
+				node = node.left;
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public BinaryTreeNode next() {
+			ErrorChecks.assertThat(mods == serial, ConcurrentModificationException.class);
+
+			BinaryTreeNode node = stack.pop();
+
+			if(node.right != null) {
+				insertLeft(node.right);
+			}
+
+			return node;
+		}
+
+	}
 
 	protected class BreathBinaryTreeIterator implements Iterator<T> {
 
@@ -530,6 +571,55 @@ public class BinaryTree<T> implements Tree<T> {
 			if(pair.second) {
 				stack.pop();
 				return pair.first.value;
+				
+			} else {
+				
+				BinaryTreeNode node = pair.first;
+				
+				if(node.right != null) {
+					stack.push(new Pair<>(node.right, false));
+				}
+				if(node.left != null) {
+					stack.push(new Pair<>(node.left, false));
+				}
+				
+				pair.second = true;
+				
+			}
+			
+			return next();
+		}
+		
+	}
+	
+	protected class PostOrderBinaryTreeNodeIterator implements Iterator<BinaryTreeNode> {
+
+		Stack<Pair<BinaryTreeNode, Boolean>> stack = new LinkedList<>();
+		protected final int mods = serial;
+		
+		PostOrderBinaryTreeNodeIterator() {
+			this(root);
+		}
+		
+		PostOrderBinaryTreeNodeIterator(BinaryTreeNode node) {
+			if(node != null)
+				stack.push(new Pair<>(node, false));
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public BinaryTreeNode next() {
+			ErrorChecks.assertThat(mods == serial, ConcurrentModificationException.class);
+			
+			Pair<BinaryTreeNode, Boolean> pair = stack.peek();
+			
+			if(pair.second) {
+				stack.pop();
+				return pair.first;
 				
 			} else {
 				
