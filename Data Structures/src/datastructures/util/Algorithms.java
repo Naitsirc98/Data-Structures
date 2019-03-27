@@ -83,5 +83,23 @@ public final class Algorithms {
 			sum += v;
 		return sum / values.length;
 	}
+	
+	public static <T> T max(AbstractList<T> list, Comparator<T> cmp) {
+		ErrorChecks.assertNotNull(list);
+		
+		if(list.isEmpty()) {
+			return null;
+		}
+		
+		T max = list.get(0);
+		
+		for(int i = 1;i < list.size();i++) {
+			if(cmp.compare(max, list.get(i)) < 0) {
+				max = list.get(i);
+			}
+		}
+		
+		return max;
+	}
 
 }

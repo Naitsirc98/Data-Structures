@@ -7,18 +7,15 @@ import java.util.Random;
 import benchmarks.Benchmark;
 import benchmarks.ListBenchmark;
 import datastructures.Collection;
-import datastructures.lists.ArrayList;
+import datastructures.SortedCollection;
 import datastructures.lists.List;
-import datastructures.restrictive.PriorityQueue;
-import datastructures.trees.BinarySearchTree;
-import datastructures.trees.BinaryTree;
 import datastructures.trees.Heap;
 
 public class Main {
 
 	public static void main(String[] args) {
 		
-		Heap<Integer> tree = new Heap<>();
+		Heap<Integer> tree = Heap.createMinHeap();
 
 		for(int i = 0;i < 10;i++) {
 			tree.add(i);
@@ -26,6 +23,22 @@ public class Main {
 
 		System.out.println(tree);
 		System.out.println(Arrays.toString(tree.toArray()));
+		
+		tree.setComparator(SortedCollection.reverseComparator());
+		
+		System.out.println(tree);
+		System.out.println(Arrays.toString(tree.toArray()));
+		
+		System.out.println();
+		System.out.println("In order");
+		print(tree.inOrderIterator());
+		System.out.println("Pre order");
+		print(tree.preOrderIterator());
+		System.out.println("Post order");
+		print(tree.postOrderIterator());
+		System.out.println("Breath");
+		print(tree.breathIterator());
+		
 		
 		/*PriorityQueue<Integer> queue = tree;
 		 

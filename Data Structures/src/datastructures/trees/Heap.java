@@ -1,15 +1,20 @@
 package datastructures.trees;
 
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import datastructures.AbstractCollection;
 import datastructures.SortedCollection;
 import datastructures.lists.ArrayList;
+import datastructures.lists.LinkedList;
 import datastructures.restrictive.PriorityQueue;
+import datastructures.restrictive.Stack;
 import datastructures.trees.BinaryTree.BinaryTreeNode;
+import datastructures.util.Algorithms;
 import datastructures.util.ErrorChecks;
+import datastructures.util.Pair;
 
 public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 	
@@ -23,6 +28,7 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 	
 	private ArrayList<T> array;
 	private Comparator<T> comparator;
+	private int serial = Integer.MIN_VALUE;
 
 	public Heap() {
 		this(SortedCollection.naturalComparator());
@@ -68,7 +74,10 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 	public void setComparator(Comparator<T> comparator) {
 		ErrorChecks.assertNotNull(comparator);
 		if(!this.comparator.equals(comparator)) {
-			// TODO
+			this.comparator = comparator;
+			final T[] arr = array.toArray();
+			clear();
+			addAll(arr);
 		}
 	}
 
@@ -79,35 +88,77 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 
 	@Override
 	public int level(T value) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		int level = 1;
+		
+		for(float parent = parentOf((float)indexOf(value));
+				parent >= 0.0f;parent = parentOf(parent)) {
+			level++;
+		}
+		
+		return level;
+	}
+	
+	private int degree(int index) {
+		
+		if(index < 0)
+			return -1;
+
+		int left = leftChildOf(index);
+		int right = rightChildOf(index);
+		
+		int degree = 0;
+		
+		if(left < size() && array.get(left) != null) {
+			degree += 1 + degree(left);
+		}
+		
+		if(right < size() && array.get(right) != null) {
+			degree += 1 + degree(right);
+		}
+		
+		return degree;
+	}
+	
+	private int indexOf(T value) {
+		return array.indexOf(value);
 	}
 
 	@Override
 	public int degree(T value) {
-		// TODO Auto-generated method stub
-		return 0;
+		return degree(indexOf(value));
 	}
 
 	@Override
 	public int degree() {
-		// TODO Auto-generated method stub
-		return 0;
+		return array.isEmpty() ? 0 : degree(array.get(0));
 	}
 
 	@Override
 	public int height() {
-		// TODO Auto-generated method stub
-		return 0;
+		return size() == 0 ? 0 : height(indexOf(array.get(0)));
+	}
+	
+	private int height(int index) {
+		
+		if(index < 0 || index >= size()) {
+			return 0;
+		}
+		
+		return 1 + Math.max(height(leftChildOf(index)) , height(rightChildOf(index)));
 	}
 
 	@Override
 	public int height(T value) {
-		return 0;
+		return height(indexOf(value));
+	}
+	
+	private float parentOf(float index) {
+		return (index-1)/2;
 	}
 	
 	private int parentOf(int index) {
-		return (index-1)/2;
+		return (int) parentOf((float)index);
 	}
 	
 	private int leftChildOf(int index) {
@@ -142,13 +193,73 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 		
 		siftUp(array.size()-1);
 		
+		serial++;
+		
 		return true;
 	}
 
 	@Override
 	public boolean remove(T value) {
-		// TODO Auto-generated method stub
-		return false;
+		return removeAt(indexOf(value));
+	}
+	
+	private boolean removeAt(int node) {
+		
+		if(node < 0)
+			return false;
+		
+		array.replaceAt(node, array.last());
+		array.removeAt(size()-1);
+		
+		siftDown(node);
+		
+		serial++;
+		return true;
+	}
+	
+	private void siftDown(int node) {
+
+		int min = min(leftChildOf(node), rightChildOf(node));
+		
+		while(min >= 0) {
+			
+			if(comparator.compare(array.get(node), array.get(min)) > 0) {
+				array.swap(node, min);
+				node = min;
+				min = min(leftChildOf(min), rightChildOf(min));
+			} else {
+				break;
+			}
+			
+		}
+		
+	}
+	
+	private int min(int left, int right) {
+		
+		if(left >= size()) {
+			if(right < size()) {
+				return right;
+			} else {
+				return -1;
+			}
+		}
+		
+		if(right >= size()) {
+			if(left < size()) {
+				return left;
+			} else {
+				return -1;
+			}
+		}
+		
+		final int cmp = comparator.compare(array.get(left), array.get(right));
+		
+		if(cmp <= 0) {
+			return left;
+		} 
+		
+		return right;
 	}
 
 	@Override
@@ -168,17 +279,24 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 
 	@Override
 	public boolean contains(T value) {
-		return false;
+		return array.contains(value);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T[] toArray() {
-		return array.toArray();
+		Object[] arr = new Object[size()];
+		
+		for(int i = 0;i < arr.length;i++) {
+			arr[i] = array.get(i);
+		}
+		
+		return (T[]) arr;
 	}
 
 	@Override
 	public AbstractCollection<T> copy() {
-		return new Heap<>(array);
+		return new Heap<>(this);
 	}
 
 	@Override
@@ -201,31 +319,170 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 
 	@Override
 	public T last() {
-		return array.last();
+		return Algorithms.max(array, comparator);
 	}
 
 	@Override
 	public Iterator<T> inOrderIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new InOrderBinaryTreeIterator();
 	}
 
 	@Override
 	public Iterator<T> preOrderIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PreOrderHeapIterator();
 	}
 
 	@Override
 	public Iterator<T> postOrderIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PostOrderHeapIterator();
 	}
 
 	@Override
 	public Iterator<T> breathIterator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new HeapBreathIterator();
+	}
+	
+	protected class InOrderBinaryTreeIterator implements Iterator<T> {
+
+		Stack<Integer> stack = new LinkedList<>();
+		protected final int mods = serial;
+
+		InOrderBinaryTreeIterator() {
+			this(0);
+		}
+
+		InOrderBinaryTreeIterator(int node) {
+			insertLeft(node);
+		}
+
+		void insertLeft(int node) {
+			while(node < size()) {
+				stack.push(node);
+				node = leftChildOf(node);
+			}
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public T next() {
+			ErrorChecks.assertThat(mods == serial, ConcurrentModificationException.class);
+
+			int node = stack.pop();
+
+			insertLeft(rightChildOf(node));
+
+			return array.get(node);
+		}
+
+	}
+	
+	protected class PreOrderHeapIterator implements Iterator<T> {
+		
+		protected Stack<Integer> stack = new LinkedList<>();
+		protected final int mods = serial;
+		
+		PreOrderHeapIterator() {
+			this(0);
+		}
+		
+		PreOrderHeapIterator(int node) {
+			push(node);
+		}
+		
+		private void push(int node) {
+			if(node < size())
+				stack.push(node);
+		}
+
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public T next() {
+			ErrorChecks.assertThat(mods == serial, ConcurrentModificationException.class);
+			
+			int node = stack.pop();
+			
+			push(rightChildOf(node));
+			
+			push(leftChildOf(node));
+			
+			return array.get(node);
+		}
+		
+	}
+	
+	protected class PostOrderHeapIterator implements Iterator<T> {
+
+		Stack<Pair<Integer, Boolean>> stack = new LinkedList<>();
+		protected final int mods = serial;
+		
+		PostOrderHeapIterator() {
+			this(0);
+		}
+		
+		PostOrderHeapIterator(int node) {
+			if(node < size())
+				stack.push(new Pair<>(node, false));
+		}
+		
+		private void push(int node) {
+			if(node < size())
+				stack.push(new Pair<>(node, false));
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return !stack.isEmpty();
+		}
+
+		@Override
+		public T next() {
+			ErrorChecks.assertThat(mods == serial, ConcurrentModificationException.class);
+			
+			Pair<Integer, Boolean> pair = stack.peek();
+			
+			if(pair.second) {
+				stack.pop();
+				return array.get(pair.first);
+				
+			} else {
+				
+				int node = pair.first;
+				
+				push(rightChildOf(node));
+				
+				push(leftChildOf(node));
+				
+				pair.second = true;
+				
+			}
+			
+			return next();
+		}
+		
+	}
+	
+	protected class HeapBreathIterator implements Iterator<T> {
+
+		Iterator<T> it = array.iterator();
+		
+		@Override
+		public boolean hasNext() {
+			return it.hasNext();
+		}
+
+		@Override
+		public T next() {
+			return it.next();
+		}
+		
 	}
 	
 	
@@ -235,11 +492,11 @@ public class Heap<T> implements BalancedTree<T>, PriorityQueue<T> {
 		int right = rightChildOf(node);
 		int left = leftChildOf(node);
 		
-	    if(right < size() && array.get(right) != null) {
+	    if(right < size()) {
 	        visualize(right, new StringBuilder().append(prefix).append(isTail ? "|   " : "    "), false, sb);
 	    }
 	    sb.append(prefix).append(isTail ? "\\—— " : "/—— ").append(array.get(node)).append("\n");
-	    if(left < size() && array.get(left) != null) {
+	    if(left < size()) {
 	        visualize(left, new StringBuilder().append(prefix).append(isTail ? "    " : "|   "), true, sb);
 	    }
 	    return sb;
